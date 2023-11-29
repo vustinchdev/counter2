@@ -7,47 +7,53 @@ import { Counter } from './components/Counter';
 import { Input } from './components/input/Input';
 import { SettingsDisplay } from './components/SettingsDisplay';
 import { Scoreboard } from './components/Scoreboard';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootStateType } from './state/store';
+import { resetAC, increaseAC, changeMaxAC, changeMinAC } from './state/numbers-reducer';
 
 
 
 
 function App() {
 
-  const [min, setMin] = useState(0)
-  const [max, setMax] = useState(5)
-  const [num, setNum] = useState(0)
+  const num = useSelector<RootStateType, number>(state => state.numbers.num)
+  const min = useSelector<RootStateType, number>(state => state.numbers.min)
+  const max = useSelector<RootStateType, number>(state => state.numbers.max)
+
+  const dispatch = useDispatch()
+
   const [value, setValue] = useState<string | null>(`enter values and press 'set'`)
 
   const setSettings = () => {
     setValue(null)
-    setNum(min)
+    dispatch(resetAC())
   }
 
   const increase = () => {
     if (num < max) {
-      setNum((prev) => prev + 1)
+      dispatch(increaseAC())
     }
   }
 
   const reset = () => {
-    setNum(min)
+    dispatch(resetAC())
   }
 
   const onChangeHandlerMax = (valueNumber: number) => {
     if (valueNumber < 0 || valueNumber <= min) {
-      setMax(valueNumber)
+      dispatch(changeMaxAC(valueNumber))
       setValue('incorrect value!')
     } else {
-      setMax(valueNumber)
+      dispatch(changeMaxAC(valueNumber))
       setValue(`enter values and press 'set'`)
     }
   }
   const onChangeHandlerMin = (valueNumber: number) => {
     if (valueNumber < 0 || valueNumber >= max) {
-      setMin(valueNumber)
+      dispatch(changeMinAC(valueNumber))
       setValue('incorrect value!')
     } else {
-      setMin(valueNumber)
+      dispatch(changeMinAC(valueNumber))
       setValue(`enter values and press 'set'`)
     }
   }
